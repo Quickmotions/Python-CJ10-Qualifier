@@ -3,14 +3,16 @@ import numpy as np
 
 
 def valid_input(image_size: tuple[int, int], tile_size: tuple[int, int], ordering: list[int]) -> bool:
-
+    # image divides into tiles neatly
     if image_size[0] % tile_size[0] != 0 or image_size[1] % tile_size[1] != 0:
         return False
 
+    # ordering is the correct length for total tiles
     total_tiles = int(image_size[0] / tile_size[0] * image_size[1] / tile_size[1])
     if total_tiles != len(ordering):
         return False
 
+    # no duplicates in ordering
     for tile_num in range(total_tiles):
         if tile_num not in ordering:
             return False
@@ -41,10 +43,11 @@ def rearrange_tiles(image_path: str, tile_size: tuple[int, int], ordering: list[
             h = tile_size[1]
             w = tile_size[0]
 
-            # save tile into tile array
+            # save tile positions into tile array
             img = image[y:y + h, x:x + w]
             scrambled_tiles.append(img)
 
+    # reorder tile positions by ordering list
     unscrambled_tiles = []
     for array_position in ordering:
         unscrambled_tiles.append(scrambled_tiles[array_position])
@@ -60,5 +63,5 @@ def rearrange_tiles(image_path: str, tile_size: tuple[int, int], ordering: list[
                 x_offset = col * tile_width
                 y_offset = row * tile_height
                 canvas[y_offset:y_offset + tile_height, x_offset:x_offset + tile_width] = tile
-    # save canvas
+
     cv2.imwrite(out_path, canvas)
